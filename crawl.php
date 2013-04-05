@@ -7,6 +7,7 @@
 	php lang.php webstore_flagfingerbooks it_it_fingerbooks es_es_fingerbooks
 	php lang.php webstore_imagazine us_us_gossipsalad_eng mx_mx_muchgossip mx_mx_igossip uk_uk_igossip
 	php lang.php webstore_playplanet us_us_playplanet_eng ca_ca_playplanet_eng
+	php lang.php webstore_mobile15 ca_ca_cellybean_eng
 
 	## goldgamifive
 	// ca_ca_igossip_eng
@@ -32,12 +33,15 @@
 
 	## webstore_playplanet
 	// ca_ca_playplanet_eng
-
+	
+	## webstore_mobile15
+	// ca_ca_cellybean_eng
 */
 
 $webstore = $argv[1];
 $file_keys_name = $webstore.'_keys.txt';
 $file_values_name = $webstore.'_values.txt';
+$file_json = $webstore.'_json.json';
 
 $lingue = array();
 foreach($argv as $ln) {
@@ -111,11 +115,14 @@ echo "\n\n\n";
 
 $chiave = array_unique($chiave);
 echo $file_values;
+$json_out_data = array();
+ 
 foreach ($chiave as $key => $value) {
 	$file_values_partial = $value."\t";
 	echo $file_values_partial;
 	$file_values .= $file_values_partial;
 	$value = substr($value, 4);
+	$json_out_data[] = $value;
 	reset($lingue);
 	foreach ($lingue as $lang) {
 		$submit_url = 'https://admin.dadanet.it/dictionary/index.php/main/browse/general/'.$lang.'?phrase=&key='.$value.'&notes=';
@@ -150,8 +157,11 @@ foreach ($chiave as $key => $value) {
 		echo $file_values_partial;
 		$file_values .= $file_values_partial;
 }
+$json_out_file = json_encode($json_out_data);
 
 file_put_contents($file_values_name, $file_values);
+file_put_contents($file_json, $json_out_file);
+
 echo "\n\n\n";
 
 function getDirectory($path = '.', $ignore = array() ) {
